@@ -12,12 +12,22 @@
         Upload Video
       </button>
     </form>
+    <hr />
+    <div class="d-flex align-items-center flex-column text-center">
+      <button
+        type="submit"
+        class="btn btn-success m-3 w-25"
+        @click.prevent="downloadVideo()"
+      >
+        Download Video
+      </button>
+      <div v-if="url">
+        <video width="50%" height="auto" controls class="m-auto">
+          <source :src="url" type="video/mp4" />
+        </video>
+      </div>
+    </div>
   </div>
-  <!-- <div class="text-center p-5">
-    <video width="50%" height="auto" controls>
-      <source src="movie.mp4" type="video/mp4">
-    </video>
-  </div> -->
 </template>
 
 <script>
@@ -28,7 +38,8 @@ export default {
     //
   },
   data: () => ({
-    message: '',
+    message: "",
+    url: "",
   }),
   methods: {
     async uploadVideo() {
@@ -46,6 +57,9 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async downloadVideo() {
+      await axios.get("/api/download-video");
     },
   },
   async created() {
