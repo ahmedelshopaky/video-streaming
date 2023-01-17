@@ -3,8 +3,11 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { config } from "dotenv";
 import mongoose from "mongoose";
+import fileUpload from "express-fileupload";
+import multer from "multer";
 
-import api from "./api/index.js";
+import api from "./server/index.js";
+// import api from "./api/index.js";
 
 const app = express();
 config();
@@ -12,10 +15,8 @@ const MONGODB = process.env.MONGODB;
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 
-app.use(bodyParser.json({ limit: "10mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded());
+app.use(bodyParser.json({ limit: "100mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
 app.use(cors());
 // app.use(
@@ -56,6 +57,8 @@ mongoose
     console.log("mongoose error");
   });
 
+app.use(fileUpload());
+
 app.get("/", (req, res) => {
   res.status(200).json({
     data: "Hello there!",
@@ -64,7 +67,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use('/api', api);
+app.use("/api", api);
 
 // Not Found MW
 app.use((req, res) => {
