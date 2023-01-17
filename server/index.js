@@ -58,7 +58,7 @@ mongoose
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    data: "Hello there!",
+    data: "Hello, world!",
     message: "string",
     success: true,
   });

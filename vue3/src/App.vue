@@ -1,30 +1,35 @@
 <template>
   <div class="p-5 text-center">
     <p>{{ message }}</p>
-    <form @submit.prevent="uploadVideo" class="form">
+    <form class="form">
       <input
         type="file"
-        accept="video/*"
+        accept="video/*|image/*"
         ref="videoInput"
         class="form-control w-25 m-auto"
       />
-      <button type="submit" class="btn btn-primary m-3 w-25">
+      <button
+        type="button"
+        class="btn btn-primary m-3 w-25"
+        @click.prevent="uploadVideo"
+      >
         Upload Video
       </button>
     </form>
     <hr />
     <div class="d-flex align-items-center flex-column text-center">
       <button
-        type="submit"
+        type="button"
         class="btn btn-success m-3 w-25"
         @click.prevent="downloadVideo()"
       >
         Download Video
       </button>
       <div v-if="url">
-        <video width="50%" height="auto" controls class="m-auto">
-          <source :src="url" type="video/mp4" />
-        </video>
+        <img :src="image" width="50%" height="auto" />
+        <!-- <video width="50%" height="auto" controls class="m-auto">
+          <source src="../../../movie.mp4" type="video/mp4" />
+        </video> -->
       </div>
     </div>
   </div>
@@ -38,8 +43,9 @@ export default {
     //
   },
   data: () => ({
+    image: "",
     message: "",
-    url: "",
+    url: "xxx",
   }),
   methods: {
     async uploadVideo() {
@@ -49,8 +55,7 @@ export default {
 
         reader.onload = async () => {
           const videoData = reader.result;
-          const res = await axios.post("/api/upload-video", { videoData });
-          console.log(res.data);
+          await axios.post("/api/upload-video", { videoData });
         };
 
         reader.readAsDataURL(file);
@@ -59,7 +64,13 @@ export default {
       }
     },
     async downloadVideo() {
-      await axios.get("/api/download-video");
+      try {
+        const response = await axios.get("/api/download-video");
+        const blob = new Blob([response.data], { type: "image/jpg" });
+        this.image = URL.createObjectURL(blob);
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
   async created() {

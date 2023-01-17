@@ -1,6 +1,7 @@
 import Buffer from "buffer";
 import MongoClient from "mongodb";
 import { config } from "dotenv";
+import mongoose from "mongoose";
 
 config();
 const MONGODB = process.env.MONGODB;
@@ -11,7 +12,7 @@ export default class Controller {
       MongoClient.MongoClient.connect(MONGODB, (err, client) => {
         if (err) {
           console.error(err);
-          return res.status(500).send(err);
+          return res.status(500).json({ err });
         }
 
         const db = client.db("mydatabase");
@@ -24,52 +25,40 @@ export default class Controller {
         bucket.openUploadStream("myvideo.mp4").end(buffer, (error, result) => {
           if (error) {
             console.error(error);
-            return res.status(500).send(error);
+            return res.status(500).json({ error });
           }
 
           console.log(result);
-          res.status(200).send(result);
+          res.status(200).json({ result });
           client.close();
         });
       });
     } catch (err) {
       console.log(err);
       client.close();
-      return res.status(500).send(err);
+      return res.status(500).json({ err });
     }
   }
 
   static async downloadVideo(req, res) {
     try {
-      MongoClient.MongoClient.connect(MONGODB, (err, client) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send(err);
-        }
-
-        const db = client.db("mydatabase");
-        const bucket = new MongoClient.GridFSBucket(db, {
-          bucketName: "videos",
-        });
-        const stream = bucket
-          .openDownloadStreamByName("myvideo.mp4")
-          .on("data", (chunk) => {
-            // process the chunk of data
-            console.log(chunk);
-          })
-          .on("error", (err) => {
-            console.log(err);
-            return res.status(500).send(err);
-          })
-          .on("end", () => {
-            client.close();
-            return res.status(200).send("done");
-          });
+      // Create a new GridFSBucket instance
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName: "videos",
       });
+
+      const id = req.params.id;
+      const name = "myvideo.mp4";
+      // Open a download stream
+      const downloadStream = bucket.openDownloadStreamByName(name);
+      // Set the file name and content type
+      // res.set("Content-Disposition", 'attachment; filename="myvideo.mp4"');
+      // res.set("Content-Type", "text/plain");
+      // Pipe the file data to the response
+      downloadStream.pipe(res);
     } catch (err) {
       console.error(err);
-      client.close();
-      return res.status(500).send(err);
+      return res.status(500).json({ err });
     }
   }
 }
