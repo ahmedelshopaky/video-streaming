@@ -14,7 +14,7 @@ export class FileUploadService {
     return this.http.get(this.baseApiUrl + 'download-video', {
       responseType: 'blob',
       headers: {
-        range: '500000',
+        range: 'bytes=1000000-4000000', // 5978947
       },
     });
   }

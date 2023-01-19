@@ -4,7 +4,7 @@
     <form class="form">
       <input
         type="file"
-        accept="video/*|image/*"
+        accept="video/*"
         ref="videoInput"
         class="form-control w-25 m-auto"
       />
@@ -26,10 +26,9 @@
         Download Video
       </button>
       <div v-if="url">
-        <img :src="image" width="50%" height="auto" />
-        <!-- <video width="50%" height="auto" controls class="m-auto">
-          <source src="../../../movie.mp4" type="video/mp4" />
-        </video> -->
+        <video width="50%" height="auto" controls class="m-auto">
+          <source :src="url" type="video/mp4" />
+        </video>
       </div>
     </div>
   </div>
@@ -43,9 +42,9 @@ export default {
     //
   },
   data: () => ({
-    image: "",
     message: "",
-    url: "xxx",
+    url: "",
+    baseURL: "api/",
   }),
   methods: {
     async uploadVideo() {
@@ -55,7 +54,7 @@ export default {
 
         reader.onload = async () => {
           const videoData = reader.result;
-          await axios.post("/api/upload-video", { videoData });
+          await axios.post(this.baseURL + "upload-video", { videoData });
         };
 
         reader.readAsDataURL(file);
@@ -65,9 +64,15 @@ export default {
     },
     async downloadVideo() {
       try {
-        const response = await axios.get("/api/download-video");
-        const blob = new Blob([response.data], { type: "image/jpg" });
-        this.image = URL.createObjectURL(blob);
+        const response = await axios.get(this.baseURL + "download-video", {
+          responseType: "blob",
+          headers: {
+            range: "500000",
+          },
+        });
+        const data = new Blob([response.data], { type: "video/mp4" });
+        this.url = URL.createObjectURL(data);
+        console.log(this.url);
       } catch (err) {
         console.log(err);
       }

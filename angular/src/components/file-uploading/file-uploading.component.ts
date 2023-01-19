@@ -20,8 +20,7 @@ export class FileUploadingComponent {
   onDownload(): void {
     this.fileUploadService.download().subscribe((data: any) => {
       this.url = URL.createObjectURL(data);
-      console.log(data)
-      console.log(this.url)
+      console.log(this.url);
     });
   }
 

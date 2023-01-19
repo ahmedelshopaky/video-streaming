@@ -4,12 +4,12 @@ import cors from "cors";
 import { config } from "dotenv";
 import mongoose from "mongoose";
 import fileUpload from "express-fileupload";
-import multer from "multer";
 
-import api from "./server/index.js";
-// import api from "./api/index.js";
+import server from "./server/index.js";
+import api from "./api/index.js";
 
 const app = express();
+
 config();
 const MONGODB = process.env.MONGODB;
 const HOST = process.env.HOST;
@@ -67,7 +67,8 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api", api);
+app.use("/api", api); // get the full video
+app.use("/server", server); // get the video in chunks
 
 // Not Found MW
 app.use((req, res) => {
