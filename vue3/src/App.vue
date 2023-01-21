@@ -72,7 +72,7 @@ export default {
         });
         const data = new Blob([response.data], { type: "video/mp4" });
         this.url = URL.createObjectURL(data);
-        console.log(this.url);
+        // console.log(this.url);
       } catch (err) {
         console.log(err);
       }

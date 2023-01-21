@@ -5,7 +5,7 @@ import { config } from "dotenv";
 import mongoose from "mongoose";
 import fileUpload from "express-fileupload";
 
-import server from "./server/index.js";
+import srv from "./srv/index.js";
 import api from "./api/index.js";
 
 const app = express();
@@ -68,7 +68,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", api); // get the full video
-app.use("/server", server); // get the video in chunks
+app.use("/srv", srv); // get the video in chunks
 
 // Not Found MW
 app.use((req, res) => {

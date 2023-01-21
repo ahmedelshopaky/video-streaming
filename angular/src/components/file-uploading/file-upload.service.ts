@@ -6,15 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class FileUploadService {
-  baseApiUrl = 'http://localhost:8000/api/';
+  baseApiUrl = 'http://localhost:8000/srv/';
 
   constructor(private http: HttpClient) {}
 
-  download(): Observable<any> {
+  download(start: number, end: number): Observable<any> {
     return this.http.get(this.baseApiUrl + 'download-video', {
       responseType: 'blob',
       headers: {
-        range: 'bytes=1000000-4000000', // 5978947
+        range: `bytes=${start}-${end}`,
       },
     });
   }

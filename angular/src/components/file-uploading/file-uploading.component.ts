@@ -18,9 +18,11 @@ export class FileUploadingComponent {
   }
 
   onDownload(): void {
-    this.fileUploadService.download().subscribe((data: any) => {
+    const start = 0;
+    const end = 785012; // 1570024 / 2
+    this.fileUploadService.download(start, end).subscribe((data: any) => {
       this.url = URL.createObjectURL(data);
-      console.log(this.url);
+      // console.log(this.url);
     });
   }
 
