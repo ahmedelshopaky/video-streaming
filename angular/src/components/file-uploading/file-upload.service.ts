@@ -6,12 +6,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class FileUploadService {
-  baseApiUrl = 'http://localhost:8000/srv/';
+  baseApiUrl = 'http://localhost:8000/srv';
 
   constructor(private http: HttpClient) {}
 
-  download(start: number, end: number): Observable<any> {
-    return this.http.get(this.baseApiUrl + 'download-video', {
+  download(start: number, end: number, name: string): Observable<any> {
+    return this.http.get(`${this.baseApiUrl}/download-video?name=${name}`, {
       responseType: 'blob',
       headers: {
         range: `bytes=${start}-${end}`,
@@ -22,6 +22,6 @@ export class FileUploadService {
   upload(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('sampleFile', file, file.name);
-    return this.http.post(this.baseApiUrl + 'upload-video', formData);
+    return this.http.post(`${this.baseApiUrl}/upload-video`, formData);
   }
 }

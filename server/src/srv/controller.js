@@ -23,9 +23,9 @@ export default class Controller {
 
   static async downloadVideo(req, res) {
     try {
-      const FILE_NAME = "file_example_MP4_480_1_5MG.mp4";
+      const name = req.query.name;
       const { fileSize, resolvedPath } = getFileSizeAndResolvedPath(
-        "./uploads/" + FILE_NAME
+        `./uploads/${name}`
       );
       // return res.sendFile(resolvedPath);
       const requestRangeHeader = req.headers.range;
