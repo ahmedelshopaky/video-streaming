@@ -43,19 +43,20 @@ const start = () => {
     console.log(`starting app on ${HOST}:${PORT}`);
   });
 };
+start();
 
-mongoose.set("strictQuery", false);
-mongoose
-  .connect(MONGODB, {
-    useNewUrlParser: true,
-  })
-  .then(() => {
-    start();
-    console.log("mongoose connected successfully");
-  })
-  .catch(() => {
-    console.log("mongoose error");
-  });
+// mongoose.set("strictQuery", false);
+// mongoose
+//   .connect(MONGODB, {
+//     useNewUrlParser: true,
+//   })
+//   .then(() => {
+//     start();
+//     console.log("mongoose connected successfully");
+//   })
+//   .catch(() => {
+//     console.log("mongoose error");
+//   });
 
 app.use(fileUpload());
 
